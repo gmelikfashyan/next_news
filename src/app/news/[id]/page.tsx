@@ -3,10 +3,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-interface PageProps {
-    params: { id: string };
-    searchParams?: { [key: string]: string | string[] | undefined };
-}
+
 
 export async function generateStaticParams() {
     return newsData.map((item) => ({
@@ -16,7 +13,7 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-dynamic';
 
-export default async function NewsDetailPage({ params }: PageProps) {
+export default async function NewsDetailPage({ params }: any) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     const { id } = params;
 
