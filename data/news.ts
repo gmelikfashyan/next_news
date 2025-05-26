@@ -1,7 +1,7 @@
 import data from "./news.json"
 
 interface Attachment {
-    type: 'PHOTO' | 'LINK';
+    type: string;
     image?: {
         src: string;
         width: number;
