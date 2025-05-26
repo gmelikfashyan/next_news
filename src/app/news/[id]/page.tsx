@@ -15,7 +15,13 @@ export async function generateStaticParams() {
     }));
 }
 export const dynamic = 'force-dynamic'
-export default async function NewsDetailPage({ params }: NewsPageProps) {
+export default async function NewsDetailPage(
+    {
+        params,
+    }: {
+        params: { id: string };
+    }
+) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     const { id } = params;
 
