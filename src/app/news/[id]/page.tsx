@@ -1,27 +1,22 @@
-import {getNewsById, newsData} from "../../../../data/news";
-
+import { getNewsById, newsData } from "../../../../data/news";
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
-interface NewsPageProps {
-    params: {
-        id: string;
-    };
+interface PageProps {
+    params: { id: string };
+    searchParams?: { [key: string]: string | string[] | undefined };
 }
+
 export async function generateStaticParams() {
     return newsData.map((item) => ({
         id: item.id.toString(),
     }));
 }
-export const dynamic = 'force-dynamic'
-export default async function NewsDetailPage(
-    {
-        params,
-    }: {
-        params: { id: string };
-    }
-) {
+
+export const dynamic = 'force-dynamic';
+
+export default async function NewsDetailPage({ params }: PageProps) {
     await new Promise(resolve => setTimeout(resolve, 5000));
     const { id } = params;
 
