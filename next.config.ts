@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
             hostname: '*.vkuserphoto.ru'
         }],
     },
+
 }
+module.exports = {
+    experimental: {
+        missingSuspenseWithCSRBailout: false,
+    },
+};
 
 export default nextConfig;
