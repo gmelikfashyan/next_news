@@ -1,7 +1,13 @@
 import type { NextConfig } from "next";
 
+// @ts-ignore
 const nextConfig: NextConfig = {
-  /* config options here */
-};
+    images: {
+        remotePatterns: [ {
+            protocol: "https",
+            hostname: '*.vkuserphoto.ru'
+        }],
+    },
+}
 
 export default nextConfig;

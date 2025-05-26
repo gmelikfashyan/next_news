@@ -1,103 +1,140 @@
-import Image from "next/image";
+import Image from 'next/image';
+import {newsData} from "../../data/news"
+import Link from "next/link";
 
-export default function Home() {
+
+
+
+export const dynamic = 'force-dynamic'
+export default function NewsPage ()  {
+
+
+
+  const formatDate = (timestamp: number): string => {
+    return new Date(timestamp * 1000).toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getCategoryColor = (type: string): string => {
+    const colors: { [key: string]: string } = {
+      'Вика_Соревнования': 'bg-blue-100 text-blue-800',
+      'Вика_Вакансии': 'bg-green-100 text-green-800',
+      'Вика_Пересдачи': 'bg-red-100 text-red-800',
+      'Вика_sumirea': 'bg-purple-100 text-purple-800',
+      'Вика_Дополнительное_образование': 'bg-yellow-100 text-yellow-800',
+      'Вика_Общее': 'bg-gray-100 text-gray-800'
+    };
+    return colors[type] || 'bg-gray-100 text-gray-800';
+  };
+
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Новости ИИТ МИРЭА
+            </h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+
+          </div>
+          <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+            <Link href={'/ErrorTrigger'}>Это ошибка</Link>
+          </button>
+          <div className="space-y-6">
+            {newsData.map((item) => (
+                <article
+                    key={item.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  <div className="p-6">
+                    {/* Category and Date */}
+                    <div className="flex justify-between items-center mb-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getCategoryColor(item.type)}`}>
+                    {item.type}
+                  </span>
+                      <time className="text-sm text-gray-500">
+                        {formatDate(item.date)}
+                      </time>
+                    </div>
+
+                    <div className="prose prose-gray max-w-none">
+                      <p className="text-gray-800 whitespace-pre-line leading-relaxed">
+                        {item.text.length <= 70 ? item.text : item.text.slice(0, 70) + "..."}
+                      </p>
+                    </div>
+
+                    {item.attachments && item.attachments.length > 0 && (
+                        <div className="mt-4 space-y-4">
+                          {item.attachments[0].type === 'PHOTO' && item.attachments[0].image && (
+                              <div className="relative rounded-lg overflow-hidden">
+                                <Image
+                                    src={item.attachments[0].image.src}
+                                    alt="Изображение к новости"
+                                    width={item.attachments[0].image.width}
+                                    height={item.attachments[0].image.height}
+                                    className="w-full h-auto object-cover max-h-96"
+                                    loading="lazy"
+                                />
+                              </div>
+                          )}
+                          {item.attachments[0].type === 'LINK' && (
+                              <a
+                                  href={item.attachments[0].link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="block border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                              >
+                                <div className="flex items-start space-x-4">
+                                  {item.attachments[0].image && (
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                            src={item.attachments[0].image.src}
+                                            alt="Превью ссылки"
+                                            width={80}
+                                            height={60}
+                                            className="rounded object-cover"
+                                            loading="lazy"
+                                        />
+                                      </div>
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    {item.attachments[0].titleLink && (
+                                        <h4 className="text-lg font-medium text-gray-900 mb-1">
+                                          {item.attachments[0].titleLink}
+                                        </h4>
+                                    )}
+                                    {item.attachments[0].description && (
+                                        <p className="text-gray-600 text-sm mb-2">
+                                          {item.attachments[0].description}
+                                        </p>
+                                    )}
+                                    {item.attachments[0].caption && (
+                                        <p className="text-blue-600 text-sm font-medium">
+                                          {item.attachments[0].caption}
+                                        </p>
+                                    )}
+                                  </div>
+                                </div>
+                              </a>
+                          )}
+                        </div>
+                    )}
+                  </div>
+                  <button type="button" className="px-3 py-2 m-1 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <Link href={`/news/${item.id}`} className="block">
+                        Читать полностью
+                    </Link>
+                  </button>
+                </article>
+            ))}
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
   );
-}
+};
